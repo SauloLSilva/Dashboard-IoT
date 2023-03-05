@@ -78,6 +78,21 @@ class Sqlitedb(object):
             return self.db_query(self._database, check_acesso)[0][0]
         except:
             return 0
+        
+    def count_entrada_mes(self, data):
+        check_acesso = """select count(*) from acessos where data_entrada like '%{}%';""".format(data)
+
+        try:
+            return self.db_query(self._database, check_acesso)[0][0]
+        except:
+            return 0
+    
+    def count_saida_mes(self, data):
+        check_acesso = """select count(*) from acessos where data_saida like '%{}%';""".format(data)
+        try:
+            return self.db_query(self._database, check_acesso)[0][0]
+        except:
+            return 0
     
     def check_last_acesso(self):
         ultima_entrada = """select max(data_entrada) from acessos;"""
@@ -99,10 +114,10 @@ class Sqlitedb(object):
                     ultimo_acesso = self.db_query(self._database, colaborador)[0][0]
                     return 'Entrada de {}, data: {}'.format(ultimo_acesso, entrada)
     
-                if saida > entrada:
+                else: 
                     colaborador = """select nome from acessos where data_saida = '{}'""".format(saida)
                     ultimo_acesso = self.db_query(self._database, colaborador)[0][0]
-                    return 'Saída de {}, data: {}'.format(ultimo_acesso, entrada)
+                    return 'Saída de {}, data: {}'.format(ultimo_acesso, saida)
         except:
             return 0
         

@@ -2,6 +2,9 @@ from multiprocessing import Pool
 import os
 import time
 from Models.sqlitedb import Sqlitedb
+import webbrowser
+
+webbrowser.open('show.html')
 
 sqlite = Sqlitedb()
 
