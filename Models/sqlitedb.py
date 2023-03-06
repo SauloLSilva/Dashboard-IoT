@@ -154,3 +154,40 @@ class Sqlitedb(object):
             return pico, acesso
         except:
             return 'sem dados', 0
+        
+    def mes_pico(self, dia):
+        try:
+            dia_acesso = 0
+            manha_total = 0
+            tarde_total = 0
+            noite_total = 0
+
+            for dia_acesso in range(1,31):
+                if dia_acesso < 10:
+                    dia_acesso = '0{}'.format(dia_acesso)
+                periodo_manha = '''SELECT count (data_entrada) from acessos where data_entrada between '{}-{} 06:00:00' and '{}-{} 12:29:59';'''.format(dia, dia_acesso, dia, dia_acesso)
+                periodo_tarde = '''SELECT count (data_entrada) from acessos where data_entrada between '{}-{} 12:30:00' and '{}-{} 18:00:00';'''.format(dia, dia_acesso, dia, dia_acesso)
+                periodo_noite = '''SELECT count (data_entrada) from acessos where data_entrada between '{}-{} 18:00:01' and '{}-{} 23:59:59';'''.format(dia, dia_acesso, dia, dia_acesso)
+
+                manha = self.db_query(self._database, periodo_manha)[0][0]
+                tarde = self.db_query(self._database, periodo_tarde)[0][0]
+                noite = self.db_query(self._database, periodo_noite)[0][0]
+
+                manha_total += manha
+                tarde_total += tarde
+                noite_total += noite
+
+            if manha_total > tarde_total and manha_total > noite_total:
+                pico = 'Manhã'
+                acesso = manha_total
+            if tarde_total > manha_total and tarde_total > noite_total:
+                pico = 'Tarde'
+                acesso = tarde_total
+            if noite_total > manha_total and noite_total > tarde_total:
+                pico = 'Noite'
+                acesso = noite_total
+
+            return pico, acesso
+        
+        except Exception as err:
+            return 'sem dados', 0

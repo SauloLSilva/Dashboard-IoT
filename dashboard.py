@@ -3,6 +3,7 @@ from Models.sqlitedb import Sqlitedb
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+from dateutil import relativedelta
 
 sqlite = Sqlitedb()
 
@@ -311,6 +312,99 @@ def horario_pico():
     plt.savefig("pico_dia.png")
     plt.close()
 
+def mes_pico():
+    data = datetime.datetime.now()
+    data_6 = data - relativedelta.relativedelta(months=6)
+    data_5 = data - relativedelta.relativedelta(months=5)
+    data_4 = data - relativedelta.relativedelta(months=4)
+    data_3 = data - relativedelta.relativedelta(months=3)
+    data_2 = data - relativedelta.relativedelta(months=2)
+    data_1 = data - relativedelta.relativedelta(months=1)
+
+    data_6 = str(data_6)[0:7]
+    data_5 = str(data_5)[0:7]
+    data_4 = str(data_4)[0:7]
+    data_3 = str(data_3)[0:7]
+    data_2 = str(data_2)[0:7]
+    data_1 = str(data_1)[0:7]
+
+    try:
+        pico_6 = sqlite.mes_pico(data_6)
+        valor_6 = pico_6[1]
+        periodo_6 = pico_6[0]
+    except:
+        valor_6 = 0
+        periodo_6 = 'sem_dados'
+
+    try:
+        pico_5 = sqlite.mes_pico(data_5)
+        valor_5 = pico_5[1]
+        periodo_5 = pico_5[0]
+    except:
+        valor_5 = 0
+        periodo_5 = 'sem_dados'
+
+    try:
+        pico_4 = sqlite.mes_pico(data_4)
+        valor_4 = pico_4[1]
+        periodo_4 = pico_4[0]
+    except:
+        valor_4 = 0
+        periodo_4 = 'sem_dados'
+
+    try:
+        pico_3 = sqlite.mes_pico(data_3)
+        valor_3 = pico_3[1]
+        periodo_3 = pico_3[0]
+    except:
+        valor_3 = 0
+        periodo_3 = 'sem_dados'
+
+    try:
+        pico_2 = sqlite.mes_pico(data_2)
+        valor_2 = pico_2[1]
+        periodo_2 = pico_2[0]
+    except:
+        valor_2 = 0
+        periodo_2 = 'sem_dados'
+
+    try:
+        pico_1 = sqlite.mes_pico(data_1)
+        valor_1 = pico_1[1]
+        periodo_1 = pico_1[0]
+    except:
+        valor_1 = 0
+        periodo_1 = 'sem_dados'
+
+
+    year_2 = [data_6, data_5, data_4, data_3, data_2, data_1]
+    unit_2 = [valor_6, valor_5, valor_4, valor_3, valor_2, valor_1]
+
+    color_2 = [cor(periodo_6),cor(periodo_5),cor(periodo_4),cor(periodo_3),cor(periodo_2),cor(periodo_1)]
+    
+    # Plot the bar graph
+    plot = plt.bar(year_2, unit_2, width=0.7, color=color_2)
+
+    # Add the data value on head of the bar
+    for value in plot:
+        height = value.get_height()
+        plt.text(value.get_x() + value.get_width()/2.,
+                1.002*height,'%d' % int(height), ha='center', va='bottom')
+    
+    # Add labels and title
+    plt.grid(False)
+    plt.title("Período de pico últimos 6 meses")
+    plt.xlabel("Mês")
+    plt.ylabel("Acessos no período de pico")
+    plt.xticks(size = 8)
+    color_label = {'Manhã':'red', 'Tarde':'yellow', 'Noite':'blue'}         
+    labels = list(color_label.keys())
+    handles = [plt.Rectangle((0,0),1,1, color=color_label[label]) for label in labels]
+    plt.legend(handles, labels)
+    
+    # Display the graph on the screen
+    plt.savefig("pico_mes.png")
+    plt.close()
 
 
 def main():
@@ -358,5 +452,6 @@ def main():
         porc_mes(por_mes, porc_outros_mes, total_acessos, total_mes)
         graph_ult_dias()
         horario_pico()
+        mes_pico()
 
 main()
