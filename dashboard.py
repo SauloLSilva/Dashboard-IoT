@@ -37,11 +37,11 @@ def graph_ult_dias():
     sete_data = str(data - sete_dias).replace('-','').split(' ')[0]
     sete_dia = '{}-{}-{}'.format(sete_data[0:4],sete_data[4:6], sete_data[6:8])
     try:
-        sete_entrada = sqlite.count_entrada_dia(cinco_dia)
+        sete_entrada = sqlite.count_entrada_dia(sete_dia)
     except:
         sete_entrada = 0
     try:
-        sete_saida = sqlite.count_saida_dia(cinco_dia)
+        sete_saida = sqlite.count_saida_dia(sete_dia)
     except:
         sete_saida = 0
 
@@ -50,11 +50,11 @@ def graph_ult_dias():
     seis_data = str(data - seis_dias).replace('-','').split(' ')[0]
     seis_dia = '{}-{}-{}'.format(seis_data[0:4],seis_data[4:6], seis_data[6:8])
     try:
-        seis_entrada = sqlite.count_entrada_dia(cinco_dia)
+        seis_entrada = sqlite.count_entrada_dia(seis_dia)
     except:
         seis_entrada = 0
     try:
-        seis_saida = sqlite.count_saida_dia(cinco_dia)
+        seis_saida = sqlite.count_saida_dia(seis_dia)
     except:
         seis_saida = 0
 
@@ -140,7 +140,7 @@ def graph_ult_dias():
     
     # Add labels and title
     plt.grid(False)
-    plt.title("Total de acesso últimos 7 dias anteriores: {}".format(sete+seis+cinco+quatro+tres+dois+um))
+    plt.title("Total de acesso últimos 7 dias: {}".format(sete+seis+cinco+quatro+tres+dois+um))
     plt.xlabel("Dia")
     plt.ylabel("Quantidade")
     plt.xticks(size = 8)
@@ -178,6 +178,140 @@ def porc_mes(por_mes, porc_outros_meses, total_ano, total_mes):
         plt.close()
     except Exception as err:
         print(err)
+
+def cor(valor):
+    if 'Manhã' in valor:
+        cor = 'red'
+        return cor
+    if 'Tarde' in valor:
+        cor = 'yellow'
+        return cor
+    if 'Noite' in valor:
+        cor = 'blue'
+        return cor
+    else:
+        return 'black'
+
+
+def horario_pico():
+    data = datetime.datetime.now()
+    sete_dias = datetime.timedelta(days = 7)
+    seis_dias = datetime.timedelta(days = 6)
+    cinco_dias = datetime.timedelta(days = 5)
+    quatro_dias = datetime.timedelta(days = 4)
+    tres_dias = datetime.timedelta(days = 3)
+    dois_dias = datetime.timedelta(days = 2)
+    ultimo_dia = datetime.timedelta(days = 1)
+
+    sete_data = str(data - sete_dias).replace('-','').split(' ')[0]
+    sete_dia = '{}-{}-{}'.format(sete_data[0:4],sete_data[4:6], sete_data[6:8])
+
+    seis_data = str(data - seis_dias).replace('-','').split(' ')[0]
+    seis_dia = '{}-{}-{}'.format(seis_data[0:4],seis_data[4:6], seis_data[6:8])
+
+    cinco_data = str(data - cinco_dias).replace('-','').split(' ')[0]
+    cinco_dia = '{}-{}-{}'.format(cinco_data[0:4],cinco_data[4:6], cinco_data[6:8])
+
+    quatro_data = str(data - quatro_dias).replace('-','').split(' ')[0]
+    quatro_dia = '{}-{}-{}'.format(quatro_data[0:4],quatro_data[4:6], quatro_data[6:8])
+
+    tres_data = str(data - tres_dias).replace('-','').split(' ')[0]
+    tres_dia = '{}-{}-{}'.format(tres_data[0:4],tres_data[4:6], tres_data[6:8])
+
+    dois_data = str(data - dois_dias).replace('-','').split(' ')[0]
+    dois_dia = '{}-{}-{}'.format(dois_data[0:4],dois_data[4:6], dois_data[6:8])
+
+    um_data = str(data - ultimo_dia).replace('-','').split(' ')[0]
+    um_dia = '{}-{}-{}'.format(um_data[0:4],um_data[4:6], um_data[6:8])
+
+    try:
+        pico_7 = sqlite.periodo_pico(sete_dia)
+        valor_7 = pico_7[1]
+        periodo_7 = pico_7[0]
+    except Exception as err:
+        valor_7 = 0
+        periodo_7 = 'sem_dados'
+
+    try:
+        pico_6 = sqlite.periodo_pico(seis_dia)
+        valor_6 = pico_6[1]
+        periodo_6 = pico_6[0]
+    except:
+        valor_6 = 0
+        periodo_6 = 'sem_dados'
+
+    try:
+        pico_5 = sqlite.periodo_pico(cinco_dia)
+        valor_5 = pico_5[1]
+        periodo_5 = pico_5[0]
+    except:
+        valor_5 = 0
+        periodo_5 = 'sem_dados'
+
+    try:
+        pico_4 = sqlite.periodo_pico(quatro_dia)
+        valor_4 = pico_4[1]
+        periodo_4 = pico_4[0]
+    except:
+        valor_6 = 0
+        periodo_6 = 'sem_dados'
+
+    try:
+        pico_3 = sqlite.periodo_pico(tres_dia)
+        valor_3 = pico_3[1]
+        periodo_3 = pico_3[0]
+    except:
+        valor_3 = 0
+        periodo_3 = 'sem_dados'
+
+    try:
+        pico_2 = sqlite.periodo_pico(dois_dia)
+        valor_2 = pico_2[1]
+        periodo_2 = pico_2[0]
+    except:
+        valor_2 = 0
+        periodo_2 = 'sem_dados'
+
+    try:
+        pico_1 = sqlite.periodo_pico(um_dia)
+        valor_1 = pico_1[1]
+        periodo_1 = pico_1[0]
+    except:
+        valor_1 = 0
+        periodo_1 = 'sem_dados'
+
+    
+    year_2 = [sete_dia, seis_dia, cinco_dia, quatro_dia, tres_dia, dois_dia, um_dia]
+    unit_2 = [valor_7, valor_6, valor_5, valor_4, valor_3, valor_2, valor_1]
+
+    color_2 = [cor(periodo_7),cor(periodo_6),cor(periodo_5),cor(periodo_4),cor(periodo_3),cor(periodo_2),cor(periodo_1)]
+    
+    # Plot the bar graph
+    plot = plt.bar(year_2, unit_2, width=0.7, color=color_2)
+
+
+    # Add the data value on head of the bar
+    for value in plot:
+        height = value.get_height()
+        plt.text(value.get_x() + value.get_width()/2.,
+                1.002*height,'%d' % int(height), ha='center', va='bottom')
+    
+    # Add labels and title
+    plt.grid(False)
+    plt.title("Período de pico últimos 7 dias")
+    plt.xlabel("Dia")
+    plt.ylabel("Acessos no período de pico")
+    plt.xticks(size = 8)
+    color_label = {'Manhã':'red', 'Tarde':'yellow', 'Noite':'blue'}         
+    labels = list(color_label.keys())
+    handles = [plt.Rectangle((0,0),1,1, color=color_label[label]) for label in labels]
+    plt.legend(handles, labels)
+    
+    # Display the graph on the screen
+    plt.savefig("pico_dia.png")
+    plt.close()
+
+
 
 def main():
     while True:
@@ -223,5 +357,6 @@ def main():
         porc_dia(por_dia, porc_outros_dias, total_mes, total_dia)
         porc_mes(por_mes, porc_outros_mes, total_acessos, total_mes)
         graph_ult_dias()
+        horario_pico()
 
 main()

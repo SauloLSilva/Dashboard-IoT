@@ -129,3 +129,28 @@ class Sqlitedb(object):
         saida = self.db_query(self._database, count_saida)[0][0]
 
         return int(entrada)+ int(saida)
+
+    def periodo_pico(self, dia):
+        try:
+            periodo_manha = '''select count(data_entrada) from acessos where data_entrada between '{} 06:00:00' and '{} 12:29:59';'''.format(dia,dia)
+            periodo_tarde = '''select count(data_entrada) from acessos where data_entrada between '{} 12:30:00' and '{} 18:00:00';'''.format(dia,dia)
+            periodo_noite = '''select count(data_entrada) from acessos where data_entrada between '{} 18:00:01' and '{} 23:59:59';'''.format(dia,dia)
+
+            manha = self.db_query(self._database, periodo_manha)[0][0]
+            tarde = self.db_query(self._database, periodo_tarde)[0][0]
+            noite = self.db_query(self._database, periodo_noite)[0][0]
+            # print(manha, tarde,noite)
+
+            if manha > tarde and manha > tarde:
+                pico = 'Manhã'
+                acesso = manha
+            if tarde > noite and tarde > noite:
+                pico = 'Tarde'
+                acesso = tarde
+            if noite > manha and noite > tarde:
+                pico = 'Noite'
+                acesso = noite
+
+            return pico, acesso
+        except:
+            return 'sem dados', 0
